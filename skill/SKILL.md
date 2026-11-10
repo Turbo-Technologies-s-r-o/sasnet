@@ -1,86 +1,93 @@
 ---
 name: gte-secondary-air-network
-description: Гидравлический расчёт сетей систем вторичных потоков ГТД (SAS) — полости, отверстия, лабиринты, каналы — пакетом sasnet: сборка сети, решение, проверки, отчёт.
+description: "Hydraulic calculation of gas turbine secondary air system (SAS) networks (cavities, holes, labyrinth seals, ducts, rotor thrust) with sasnet. Build the network, solve, check, report."
 ---
 
-# Расчёт сетей вторичных потоков ГТД (sasnet)
+# Gas turbine secondary air networks (sasnet)
 
-Пользователь — опытный конструктор ГТД. Разговор инженерный, без учебника.
-Результат — входной файл сети, решение, отчёт и честный список ограничений.
-Оценка по трендам относительно известной точки, а не по абсолютным числам.
-Подписывает расчёт человек.
+The user is an experienced engine engineer: keep it engineering-level, no textbook tone.
+The result is a network input file, the solution, a report and an honest list of limitations.
+Judge results by trends relative to a known reference point, not by absolute numbers alone.
+A human signs off the calculation.
 
-## 1. Собери исходные данные (недостающее — одним списком)
+## 1. Collect the inputs (ask for everything missing in one list)
 
-- Схема системы: полости (узлы) и связи между ними (элементы); откуда отбор, куда сброс
-- Граничные узлы: полное давление и полная температура (отборы компрессора, проточная часть, масляная полость, атмосфера)
-- Для каждого элемента — тип и геометрия:
-  - отверстие: площадь, Cd (и откуда он взят)
-  - лабиринт: зазор, радиус, число гребней, шаг, прямоточный или ступенчатый, Cd
-  - канал: площадь, гидравлический диаметр, длина, шероховатость, сумма местных сопротивлений ΣK с номерами диаграмм Идельчика (или другого источника)
-- Режим: обороты, точка дросселирования — для записи в отчёт (вращение в v0.1 не моделируется)
-- Эталон: расчёт или замер из архива пользователя для этой или близкой системы
+- System scheme: cavities (nodes) and the connections between them (elements); where air is bled, where it is dumped
+- Boundary nodes: total pressure and total temperature (compressor bleeds, main gas path, oil sumps, ambient)
+- For every element — type and geometry:
+  - orifice: area, Cd (and where it comes from)
+  - labyrinth: clearance, radius, number of teeth, pitch, straight or stepped, Cd
+  - duct (holes, slots, annular gaps): shape, size, length, count, area ratios at inlet and outlet, rotation (ω, radii), bends, heating
+  - channel: area, hydraulic diameter, length, roughness, sum of local losses ΣK with the source of each value
+- Operating point: speed, throttle point
+- Reference: a test or a previous calculation for this or a similar system
 
-Чего нет — помечай в входном файле как ДОПУЩЕНИЕ (поле `source`), не придумывай молча.
-Коэффициенты Идельчика и Слитенко бери только из книг пользователя на сервере, с номером диаграммы или страницей. Из памяти — никогда.
+Anything missing is marked in the input file as an ASSUMPTION (field `source`) — never invent values silently.
+Handbook coefficients only from a cited source (diagram or page number). Never from memory.
 
-## 2. Собери входной файл
+## 2. Build the input file
 
-Формат JSON (пример: `examples/demo_network.json`):
+JSON format (example: `examples/demo_network.json`):
 
 ```json
 {"nodes": [{"name": "hp_bleed", "boundary": true, "p": 1500000, "T": 720},
            {"name": "front_cavity"}],
  "elements": [{"type": "orifice", "name": "disk_holes", "a": "front_cavity", "b": "rim_cavity",
-               "area": 1.6e-4, "cd": 0.62, "source": "Cd по испытанию проекта X"}]}
+               "area": 1.6e-4, "cd": 0.62, "source": "Cd from rig test, project X"}]}
 ```
 
-Единицы СИ: Па, К, м, м². Имена узлов и элементов — осмысленные, как на схеме пользователя.
-Покажи пользователю схему сети (таблица узлов и связей или диаграмма) до расчёта.
+SI units: Pa, K, m, m². Use meaningful node and element names, as on the user's scheme.
+Show the user the network (table of nodes and links, or a diagram) before solving.
 
-## 3. Реши
+## 3. Solve
 
 ```bash
 python -m sasnet network.json report.md
 ```
 
-или из Python: `Network.from_json(...).solve()`.
+or from Python: `Network.from_json(...).solve()`.
 
-Калибровочный пакет (если установлен и есть лицензия): `--calibration <имя пакета или rules.json>`; список — `python -m sasnet --list-calibrations`. Пакет заполняет только незаданные в файле коэффициенты; в отчёте строка «Coefficients» и таблица «Calibrated parameters» — всегда показывай пользователю, на каких коэффициентах посчитано. Без пакета — первые принципы. См. docs/calibration.md.
+Coefficients: without a calibration the core uses first-principles defaults. The user's own
+coefficients go in a JSON rules file (`examples/my_coefficients.json`):
+`--calibration my_coefficients.json`. An installed licensed pack is used by name
+(`--calibration <pack>`; list with `python -m sasnet --list-calibrations`). A calibration only
+fills values the network file leaves open. Always show the user the report's "Coefficients" line
+and "Calibrated parameters" table, so it is clear which coefficients the result is based on.
+See docs/calibration.md.
 
-## 4. Проверь перед тем, как показывать числа
+## 4. Check before showing any numbers
 
-- Сходимость: `converged = yes`, относительный дисбаланс массы ≤ 1e-6 во всех полостях
-- Предупреждения отчёта (раздел Checks) — каждое пересказать пользователю:
-  - отверстие заперто — это физика, не ошибка; проверь, ожидаемо ли
-  - последний гребень лабиринта заперт или близок — формула Мартина завышает расход
-  - Мах в канале > 0.3 — модель низкого Маха вне области применимости
-- Направления потоков: обратный поток там, где его не ждали, — первым делом показать
-- Смешение температур в полостях выглядит разумно
-- Сравни с эталоном из архива в трендах: больше или меньше расход, на сколько, почему
+- Convergence: `converged = yes`, relative mass imbalance ≤ 1e-6 in every cavity
+- Every warning in the report's Checks section — explain each one to the user:
+  - choked orifice — physics, not an error; check whether it is expected
+  - labyrinth last tooth choked or close to it — the pure Martin formula would overpredict the flow
+  - Mach > 0.3 in a channel or duct — outside the low-Mach model; use `compressible` or split the branch
+  - rotating duct without swirl-entry loss (`c_rot = 0`) — set it from data
+- Flow directions: unexpected reverse flow is the first thing to show
+- Cavity mixing temperatures look reasonable
+- Compare with the reference in trends: more or less flow, by how much, and why
 
-## 5. Отдай
+## 5. Deliver
 
-1. Входной файл сети (JSON) — с полями `source` для всех коэффициентов
-2. Отчёт (markdown или PDF): узлы, расходы, проверки, сравнение с эталоном
-3. Список ограничений версии (ниже) и что из них влияет на этот расчёт
+1. The network input file (JSON) with `source` fields for every coefficient
+2. The report (markdown or PDF): nodes, flows, checks, comparison with the reference
+3. The list of limitations below and which of them affect this calculation
 
-## Осевая сила
+## Rotor axial thrust
 
-`sasnet.axial.Rotor`: грани полостей (r, R, узел, сторона ±), лопаточная сила; давления — из решения сети. По умолчанию давление в полости постоянно по радиусу (как в ручных расчётах, `pi_value=3.14` воспроизводит старые таблицы); опция закрутки K интегрирует рост давления к периферии. Выдать таблицу по граням и итог по роторам на всех режимах.
+`sasnet.axial.Rotor`: cavity faces (r, R, node, side ±) and blade force; pressures come from the
+network solution. By default cavity pressure is uniform over radius, as in hand calculations
+(`pi_value=3.14` reproduces older tables exactly); the swirl option K integrates the pressure rise
+towards the rim. Deliver a table by face and totals per rotor for every operating point.
 
-## Ограничения v0.4 (говорить всегда, когда влияют на результат)
+## Limitations (always state them when they affect the result)
 
-- K_in = 0.5 (Вейсбах) для острой кромки — главная калибровочная константа отверстий; по архивным расчётам первые принципы дают расход отверстий в среднем на ~8 % больше
-- Переход «короткий канал — тонкая диафрагма» по длине присоединения 2·d_h — оценка порядка величины
-- Вход в вращающийся канал: c_rot по умолчанию 0 (выключено), задать по данным
-- Теплообмен по длине канала не считается (только заданный dT); температуры полостей можно задать (`fix_T`)
-
-## Прочие ограничения
-
-- Нет вращения: насосный эффект и закрутка во вращающихся полостях, поправки к Cd вращающихся отверстий (McGreehan & Schotsch) — v0.2
-- Нет ветрового нагрева во вращающихся полостях
-- Лабиринт: Мартин + перенос энергии струи + изоэнтропийный последний гребень (запирание учтено)
-- Каналы: модель низкого Маха (плотность по среднему давлению), опция (1 + M²/4)
-- Давления в полостях — полные (скорость в полости не учитывается)
-- Cd и ΣK — входные данные, библиотека их не подбирает
+- Sharp-edged inlet constant K_in = 0.5 (Weisbach) is the main uncertainty for holes; first
+  principles tend to give somewhat higher hole flows than calibrated references
+- Short channel to thin orifice transition over the reattachment length 2·d_h is an order-of-magnitude estimate
+- Swirl-entry loss into rotating holes: `c_rot` defaults to 0 (off), set it from data
+- No heat transfer along channels (only an imposed dT); cavity temperatures can be imposed (`fix_T`)
+- Rotating cavities (free/forced vortex, disk pumping, windage) are not modelled yet
+- Labyrinth: Martin + jet carry-over + isentropic last tooth (choking included)
+- Cavity pressures are total pressures (velocity in the cavity neglected)
+- Cd and ΣK are inputs or come from a calibration; the library does not fit them
