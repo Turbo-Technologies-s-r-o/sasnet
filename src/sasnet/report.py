@@ -13,7 +13,9 @@ def _calibration_line(net) -> str:
 
 
 def markdown(net: Network, r: Result, title: str = "Secondary air system network") -> str:
-    lines = [f"# {title}", "",
+    cal = getattr(net, "calibration", None)
+    mark = getattr(cal, "watermark", "") if cal is not None else ""
+    lines = [f"# {title}", ""] + ([f"> **{mark}**", ""] if mark else []) + [
              f"sasnet {__version__}. Gas: R = {net.gas.R} J/(kg K), gamma = {net.gas.gamma}. "
              "Node pressures are total pressures in plenums; elements adiabatic.", "",
              _calibration_line(net),

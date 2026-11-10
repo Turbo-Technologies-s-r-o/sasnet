@@ -37,6 +37,8 @@ class Calibration:
     version: str = ""
     licensee: str = ""
     applied: list = field(default_factory=list)   # (element, parameter, value)
+    allow_save: bool = True     # a pack may forbid writing reports (e.g. free evaluation)
+    watermark: str = ""         # printed at the top of every report when set
 
     def fill(self, kind: str, params: dict) -> dict:
         """Return extra parameters for one element (kind = JSON type)."""

@@ -36,8 +36,12 @@ def main(argv=None):
     r = net.solve()
     text = markdown(net, r, title=a.network)
     if a.report:
-        with open(a.report, "w", encoding="utf-8") as fh:
-            fh.write(text)
+        if getattr(net.calibration, "allow_save", True):
+            with open(a.report, "w", encoding="utf-8") as fh:
+                fh.write(text)
+        else:
+            print(f"sasnet: the calibration pack in use does not allow saving results; "
+                  f"{a.report} not written", file=sys.stderr)
     print(text)
     return 0 if r.converged else 1
 
