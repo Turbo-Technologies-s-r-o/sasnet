@@ -59,9 +59,10 @@ my-pack = "my_package:MyCalibration"
 Turbo Technologies s.r.o. offers its calibrated coefficient pack (`turbotech`)
 with its validation record:
 
-- **Trial** — paid, up to 2 calculations within 3 days;
-- **Project licence** — one project, its full duration;
-- **Annual licence** — all projects of the licensee, with updates.
+- **Free evaluation** — 2 hours, results shown on screen only (not saved);
+- **Trial** — €100: up to 2 calculations within 3 days, results saved;
+- **Project licence** — one project, its full duration (price on request);
+- **Annual licence** — all projects of the licensee, with updates (price on request).
 
 The pack needs a signed licence file (`$SASNET_TT_LICENCE` or
 `~/.sasnet/turbotech.lic`); the licensee, plan and validity are printed in
