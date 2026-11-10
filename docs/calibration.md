@@ -1,7 +1,8 @@
 # Calibration packs
 
 The sasnet core is complete without any calibration: every coefficient has a
-default derived in [theory.md](theory.md). A **calibration pack** adds
+default derived in [theory.md](theory.md). Anyone can use their own coefficients for free (template:
+[../examples/my_coefficients.json](../examples/my_coefficients.json)). A **calibration pack** adds
 coefficients fitted to test data or reference calculations — for a company,
 an engine family or a project.
 
@@ -53,7 +54,15 @@ and register the class under the entry-point group `sasnet.calibrations`:
 my-pack = "my_package:MyCalibration"
 ```
 
-## Commercial calibration
+## Turbo Technologies coefficients
 
-Turbo Technologies s.r.o. licenses calibrated coefficient packs with their
-validation records for commercial projects. Contact: turbotechnologies@email.cz
+Turbo Technologies s.r.o. offers its calibrated coefficient pack (`turbotech`)
+with its validation record:
+
+- **Trial** — paid, one project, limited time;
+- **Project licence** — one project, its full duration;
+- **Annual licence** — all projects of the licensee, with updates.
+
+The pack needs a signed licence file (`$SASNET_TT_LICENCE` or
+`~/.sasnet/turbotech.lic`); the licensee, plan and validity are printed in
+every report. Contact: turbotechnologies@email.cz
