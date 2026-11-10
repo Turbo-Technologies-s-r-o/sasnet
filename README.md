@@ -63,7 +63,8 @@ value is listed in the report. Details: [docs/calibration.md](docs/calibration.m
 **Turbo Technologies coefficients — paid.** Our calibrated coefficient pack,
 fitted on gas turbine networks and delivered with its validation record:
 
-- **Trial** — €100: up to 2 calculations within 3 days;
+- **Free evaluation** — 2 hours, results shown on screen only (not saved);
+- **Trial** — €100: up to 2 calculations within 3 days, results saved;
 - **Project licence** — one project, its full duration (price on request);
 - **Annual licence** — all projects of the licensee, with updates (price on request).
 
