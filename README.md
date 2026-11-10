@@ -61,9 +61,13 @@ A calibration only fills values the network file leaves open, and every filled
 value is listed in the report. Details: [docs/calibration.md](docs/calibration.md).
 
 **Turbo Technologies coefficients — paid.** Our calibrated coefficient pack,
-fitted on gas turbine networks and delivered with its validation record, is
-available as a paid trial (one project, limited time) or under a project or
-annual licence. It installs next to the core and is used the same way
+fitted on gas turbine networks and delivered with its validation record:
+
+- **Trial** — paid, up to 2 calculations within 3 days;
+- **Project licence** — one project, its full duration;
+- **Annual licence** — all projects of the licensee, with updates.
+
+It installs next to the core and is used the same way
 (`--calibration turbotech`). Contact: turbotechnologies@email.cz
 
 ## Limitations
