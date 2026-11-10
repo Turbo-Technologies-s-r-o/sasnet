@@ -1,0 +1,10 @@
+{
+  "_comment": "Template for your own coefficients. Free to use and change. The numbers below are PLACEHOLDERS, not recommendations: replace them with values from your own tests or reference calculations.",
+  "name": "my-coefficients",
+  "version": "1",
+  "rules": {
+    "orifice":   {"cd": 0.62},
+    "labyrinth": {"cd": {"c0": 0.75, "per": {"clearance_mm": -0.10}, "min": 0.55, "max": 0.85}},
+    "duct":      {"k_inlet": 0.5}
+  }
+}
