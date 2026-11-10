@@ -41,22 +41,30 @@ and is consistent with calculation tools used in EASA Part 21 and CS-E work.
 ```bash
 pip install -e .
 python -m sasnet examples/demo_network.json report.md
-python -m sasnet examples/demo_network.json report.md --calibration rules.json
+python -m sasnet examples/demo_network.json report.md --calibration examples/my_coefficients.json
 pytest
 ```
 
 The demo network uses invented numbers and does not describe a real engine.
 
-## Calibration packs
+## Your coefficients or ours
 
-The core runs on first-principles defaults. Coefficients fitted to test or
-reference data can be added as a calibration pack (open JSON rules or an
-installable Python package); a pack only fills values the network file leaves
-open, and every filled value is listed in the report. See
-[docs/calibration.md](docs/calibration.md).
+**Your own coefficients — free.** The core runs on first-principles defaults.
+Anyone can add their own discharge and loss coefficients as a JSON rules file
+(template: [examples/my_coefficients.json](examples/my_coefficients.json)):
 
-Calibrated coefficient packs with validation records are available from
-Turbo Technologies under licence for commercial projects.
+```bash
+python -m sasnet network.json report.md --calibration my_coefficients.json
+```
+
+A calibration only fills values the network file leaves open, and every filled
+value is listed in the report. Details: [docs/calibration.md](docs/calibration.md).
+
+**Turbo Technologies coefficients — paid.** Our calibrated coefficient pack,
+fitted on gas turbine networks and delivered with its validation record, is
+available as a paid trial (one project, limited time) or under a project or
+annual licence. It installs next to the core and is used the same way
+(`--calibration turbotech`). Contact: turbotechnologies@email.cz
 
 ## Limitations
 
