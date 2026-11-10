@@ -1,0 +1,24 @@
+{
+  "_comment": "Illustrative network with invented numbers, not a real engine. Compressor bleed feeds a front cavity through a channel; the cavity leaks to the bearing sump via a labyrinth and feeds a rim cavity through orifices; a cooler low-pressure bleed also feeds the rim cavity.",
+  "nodes": [
+    {"name": "hp_bleed",    "boundary": true, "p": 1500000, "T": 720},
+    {"name": "lp_bleed",    "boundary": true, "p": 650000,  "T": 460},
+    {"name": "sump_vent",   "boundary": true, "p": 160000,  "T": 400},
+    {"name": "turbine_rim", "boundary": true, "p": 560000,  "T": 900},
+    {"name": "front_cavity"},
+    {"name": "rim_cavity"}
+  ],
+  "elements": [
+    {"type": "channel", "name": "feed_pipe", "a": "hp_bleed", "b": "front_cavity",
+     "area": 3.0e-4, "d_h": 0.0195, "length": 0.45, "roughness": 2e-6, "k_local": 2.3,
+     "source": "K: inlet + two bends (record the source of each value)"},
+    {"type": "labyrinth", "name": "bearing_seal", "a": "front_cavity", "b": "sump_vent",
+     "clearance": 0.25e-3, "radius": 0.085, "teeth": 5, "pitch": 3.5e-3, "cd": 0.7},
+    {"type": "orifice", "name": "disk_holes", "a": "front_cavity", "b": "rim_cavity",
+     "area": 1.6e-4, "cd": 0.62},
+    {"type": "orifice", "name": "lp_inlet", "a": "lp_bleed", "b": "rim_cavity",
+     "area": 1.2e-4, "cd": 0.65},
+    {"type": "labyrinth", "name": "rim_seal", "a": "rim_cavity", "b": "turbine_rim",
+     "clearance": 0.5e-3, "radius": 0.21, "teeth": 3, "pitch": 5e-3, "cd": 0.7}
+  ]
+}
