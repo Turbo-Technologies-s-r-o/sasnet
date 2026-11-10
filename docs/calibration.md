@@ -59,7 +59,7 @@ my-pack = "my_package:MyCalibration"
 Turbo Technologies s.r.o. offers its calibrated coefficient pack (`turbotech`)
 with its validation record:
 
-- **Trial** — paid, one project, limited time;
+- **Trial** — paid, up to 2 calculations within 3 days;
 - **Project licence** — one project, its full duration;
 - **Annual licence** — all projects of the licensee, with updates.
 
