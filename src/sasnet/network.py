@@ -46,6 +46,7 @@ class Network:
         self.gas = gas
         self.nodes: dict[str, Node] = {}
         self.elements: list[el.Element] = []
+        self.calibration = None   # set by from_dict when a calibration pack is used
 
     # --- building -------------------------------------------------------
     def boundary(self, name: str, p: float, T: float) -> "Network":
@@ -228,8 +229,13 @@ class Network:
 
     # --- input file -----------------------------------------------------
     @classmethod
-    def from_dict(cls, d: dict) -> "Network":
+    def from_dict(cls, d: dict, calibration=None) -> "Network":
+        """Build from a dict. ``calibration``: a Calibration, a pack name, a
+        .json rules file, or None; defaults to d.get("calibration")."""
+        from . import calibration as cal_mod
+        cal = cal_mod.load(calibration if calibration is not None else d.get("calibration"))
         net = cls()
+        net.calibration = cal
         for n in d["nodes"]:
             if n.get("boundary"):
                 net.boundary(n["name"], n["p"], n["T"])
@@ -241,10 +247,12 @@ class Network:
             e = dict(e)
             kind = e.pop("type")
             e.pop("source", None)  # free-text reference (drawing, report, handbook diagram)
+            if cal is not None:
+                e = cal.apply(kind, e)
             net.add(kinds[kind](**e))
         return net
 
     @classmethod
-    def from_json(cls, path: str) -> "Network":
+    def from_json(cls, path: str, calibration=None) -> "Network":
         with open(path, encoding="utf-8") as fh:
-            return cls.from_dict(json.load(fh))
+            return cls.from_dict(json.load(fh), calibration)
