@@ -28,7 +28,11 @@ def main(argv=None):
     if not a.network:
         print(__doc__)
         return 2
-    net = Network.from_json(a.network, a.calibration)
+    try:
+        net = Network.from_json(a.network, a.calibration)
+    except (LookupError, RuntimeError, OSError, ValueError) as e:
+        print(f"sasnet: {e}", file=sys.stderr)
+        return 3
     r = net.solve()
     text = markdown(net, r, title=a.network)
     if a.report:
