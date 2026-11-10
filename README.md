@@ -63,9 +63,9 @@ value is listed in the report. Details: [docs/calibration.md](docs/calibration.m
 **Turbo Technologies coefficients — paid.** Our calibrated coefficient pack,
 fitted on gas turbine networks and delivered with its validation record:
 
-- **Trial** — paid, up to 2 calculations within 3 days;
-- **Project licence** — one project, its full duration;
-- **Annual licence** — all projects of the licensee, with updates.
+- **Trial** — €100: up to 2 calculations within 3 days;
+- **Project licence** — one project, its full duration (price on request);
+- **Annual licence** — all projects of the licensee, with updates (price on request).
 
 It installs next to the core and is used the same way
 (`--calibration turbotech`). Contact: turbotechnologies@email.cz
