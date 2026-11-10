@@ -41,10 +41,22 @@ and is consistent with calculation tools used in EASA Part 21 and CS-E work.
 ```bash
 pip install -e .
 python -m sasnet examples/demo_network.json report.md
+python -m sasnet examples/demo_network.json report.md --calibration rules.json
 pytest
 ```
 
 The demo network uses invented numbers and does not describe a real engine.
+
+## Calibration packs
+
+The core runs on first-principles defaults. Coefficients fitted to test or
+reference data can be added as a calibration pack (open JSON rules or an
+installable Python package); a pack only fills values the network file leaves
+open, and every filled value is listed in the report. See
+[docs/calibration.md](docs/calibration.md).
+
+Calibrated coefficient packs with validation records are available from
+Turbo Technologies under licence for commercial projects.
 
 ## Limitations
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sasnet"
-version = "0.3.0"
+version = "0.4.0"
 description = "1D secondary air system network solver for gas turbines and turbomachinery"
 license = { text = "Apache-2.0" }
 readme = "README.md"
